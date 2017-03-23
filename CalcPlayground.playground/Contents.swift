@@ -95,80 +95,120 @@ var intStack:Stack<Double>
 
 var answer = postfixEvaluate(equation: postFixExpr)
 
-func precedence(_ oper: String, _ name: Character) -> Bool{
-    var x: Int = 0
-    var y: Int = 0
+//this func is finding the incoming precedence
+func iPrecedence(_ oper: String) -> Int {
+    var value: Int = 0
     
-    if(name == "*" || name == "/"){
-        x = 1
+    if(oper == ")"){
+        value = 4
     }
-    
     if(oper == "*" || oper == "/"){
-        y = 1
+        value = 3
+    }
+    if(oper == "+" || oper == "-"){
+        value = 2
+    }
+    if(oper == "("){
+        value = 6
+    }
+    return value
+}
+
+//func is finding the precendce of the upcoming character
+func sPrecedence(_ name: Character) -> Int {
+    var value: Int = 0
+    
+    if(name == ")"){
+        value = 4
+    }
+    if(name == "*" || name == "/"){
+        value = 3
     }
     
-    if(x<=y){
-        return true
+    if(name == "+" || name == "-"){
+        value = 2
     }
-    else {
-        return false
+    if(name == "("){
+        value = 1
     }
+        //if there is no character return 0
+    return value
+}
+
+func evaluate (_ numStack: inout Stack<Double>, _ opStack: inout Stack<Character>) -> Double{
+    var B: Double
+    var A: Double
+    var Answer: Double
+    var C: Character
+    
+    B = numStack.pop()!
+    A = numStack.pop()!
+    C = opStack.pop()!
+    
+    Answer = doMath(A, B, C)
+    
+    return Answer
 }
 
 func infix(_ expression: [String]) -> Double {
     var numberStack = Stack<Double>()
     var operatorStack = Stack<Character>()
     var element:String
-    
-    var B: Double
-    var A: Double
-    var Answer: Double
-    var C: Character
+
+    var ans: Double = 0
     
     print(numberStack)
     print(expression)
     print(operatorStack)
     
+    //For loop with continue to loop through all of the information in the stack
     for i in 0...expression.count-1{
         element = expression[i]
-        if element == "+" || element == "-" || element == "*" || element == "/"{
-            if operatorStack.isEmpty() || precedence(element, operatorStack.top()!){
+        if element == "(" {
+            operatorStack.push(Character(element))
+            print("Hello", element)
+            //element = ""
+        } else
+        
+        //print(expression[i])
+        //Checks to see if whatever is coming in is an operator
+        if element == "+" || element == "-" || element == "*" || element == "/" {
+            //If the operator stack is empty or their is a precedence between the two it will push the element onto the stack
+            if operatorStack.isEmpty() || sPrecedence(operatorStack.top()!) < iPrecedence(element){
                 operatorStack.push(Character(element))
+                print("Hello", element)
             }
-                
+            
+            //This else statement will happen if there is a higher precedence between two operators such as a multiplcation, it will do the math and solve for the higher of the two
             else {
-                B = numberStack.pop()!
-                A = numberStack.pop()!
-                C = operatorStack.pop()!
-                
-                Answer = doMath(A, B, C)
-                numberStack.push(Answer)
+                ans = evaluate(&numberStack, &operatorStack)
+                numberStack.push(ans)
                 operatorStack.push(Character(element))
             }
+        } else
+        //print("Hello again!")
+        //This if statement will check and deal with any operations within the parenthesis and then discard them.
+        if element == ")" {
+            while operatorStack.top() != "(" {
+                ans = evaluate(&numberStack, &operatorStack)
+                numberStack.push(ans)
+            }
+            operatorStack.pop()
         }
+        //If it is a number it will just be pushed onto the number stack
         else{
             numberStack.push(Double(element)!)
         }
     }
+    //This while statement will be hit to do the math on all the remaining numbers
     while !operatorStack.isEmpty(){
-        B = numberStack.pop()!
-        A = numberStack.pop()!
-        C = operatorStack.pop()!
-        Answer = doMath(A, B, C)
-        
-        numberStack.push(Answer)
+        ans = evaluate(&numberStack, &operatorStack)
+        numberStack.push(ans)
     }
     print(numberStack.top()!)
     
     return numberStack.top()!
 }
 
-let infixExpr = ["3.2", "+", "2.34", "*", "2"]
+let infixExpr = ["(","6", "+", "2", ")", "-", "0.5"]
 infix(infixExpr)
-
-
-
-
-
-
-

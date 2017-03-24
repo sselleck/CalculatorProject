@@ -58,7 +58,7 @@
                                             <color key="titleColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                         <connections>
-                                            <action selector="numbersHit:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kga-tn-CJN"/>
+                                            <action selector="decimal:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QZ9-hr-ffk"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eZC-Cf-MJG">
@@ -304,7 +304,7 @@
                                             <color key="titleColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                         <connections>
-                                            <action selector="clear:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cSF-fB-y5a"/>
+                                            <action selector="clearButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LWH-b8-3h0"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="to9-ny-bbK">
@@ -413,6 +413,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="clearButton" destination="kwK-OC-Zpg" id="kr2-YX-Y4m"/>
                         <outlet property="solutionLabel" destination="lwS-vP-BsQ" id="FnX-Mf-4gy"/>
                     </connections>
                 </viewController>

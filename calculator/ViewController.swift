@@ -38,6 +38,7 @@ struct Stack <Element>{
 class ViewController: UIViewController {
     
     @IBOutlet var solutionLabel: UILabel! //variable for the solution output
+    @IBOutlet var clearButton: UIButton! //clear button outlet to change title 
     
     var numberStack = Stack<Double>()
     var operatorStack = Stack<Character>()
@@ -47,6 +48,10 @@ class ViewController: UIViewController {
     var Num: Double = 0
     var display: String = ""
     var i:Int = 0 //This will check to see if a ) was used and will then hit a test to work properly
+    var erase: Bool = false
+    var a: Int = 1//variable for decimal tracking
+    var count: Double = 10// variable used to decrement numbers beyond decimal
+
     
     func displayAnswer(_ solutionString: String){
         solutionLabel.text = solutionString
@@ -154,32 +159,37 @@ class ViewController: UIViewController {
     }
     
     @IBAction func numbersHit (_ sender: UIButton){
+        var ac: Bool = false
         let numClick = sender.titleLabel?.text
-        Num = (Num*10) + Double(numClick!)!
-        display = String(Num)
+        var s: Double = 0
         
-        /*case ".":
-         var count: Double = 10
-         var i: Double = 0
-         while clicked  == "6"{//!= "+" ||  clicked != "-" || clicked != "x" || clicked != "÷" || clicked != "(" || clicked != ")" || clicked != "±" {
-         i += Double(clicked!)!/count
-         currentOput.append(String(i))
-         displayAnswer(Double(currentOput)!)
-         count *= 10
-         print("Dec", currentOput)
-         }
-         equation.append(clicked! + String(i))
-         */
+        s = Double(numClick!)!
+        
+        if a == 0 {
+            Num = Num + (s / count)
+            count *= 10
+        }
+        else {
+            Num = (Num*10) + Double(numClick!)!
+        }
+        display = String(Num)
+        ac = clear(clearButton)
         displayAnswer(display)
         i = 0
     }
     
+    @IBAction func decimal(_ sender: UIButton){
+        a = 0
+    }
     @IBAction func operatorsHit (_ sender: UIButton){
         //This will check incase if the last key hit was the ) and it will not push the current value of Num; otherwise it will be pushed
         if i != 1 {
             numberStack.push(Num)
             Num = 0
         }
+        //reset a and count to take in a new number
+        a = 1
+        count = 10
         print("Stack", numberStack)
         let opClick = sender.titleLabel?.text
         print("oper title", opClick!)
@@ -208,6 +218,10 @@ class ViewController: UIViewController {
     }
     
     @IBAction func leftParHit (_ sender: UIButton){
+        //reset a and count to take in a new number
+        a = 1
+        count = 10
+
         let lParClick = sender.titleLabel?.text
         operatorStack.push(Character(lParClick!))
         print("Left Par", lParClick!)
@@ -215,6 +229,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func rightParHit (_ sender: UIButton){
+        //reset a and count to take in a new number
+        a = 1
+        count = 10
         numberStack.push(Num)
         Num = 0
         var ans: Double = 0
@@ -231,6 +248,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func negativeSign (_ sender: UIButton){
+        //reset a and count to take in a new number
+        a = 1
+        count = 10
         numberStack.push(Num)
         var negNum: Double
         negNum = numberStack.pop()!
@@ -241,18 +261,53 @@ class ViewController: UIViewController {
         i = 0
     }
     
-    @IBAction func clear(_ sender: UIButton) {
-        Num = 0
-        numberStack.clearStack()
-        operatorStack.clearStack()
-        answer = 0
-        print(operatorStack, numberStack)
-        display = "0"
-        displayAnswer(display)
-        i = 0
+    @IBAction func clearButton(_ sender: UIButton) {
+        //reset a and count to take in a new number
+        a = 1
+        count = 10
+        var ac: Bool = false
+        if erase == false {
+            ac = clear(sender)
+            sender.setTitle("C", for: .normal) //Sets the title to C
+            Num = 0
+            answer = 0
+            numberStack.clearStack()
+            operatorStack.clearStack()
+            print(operatorStack, numberStack)
+            display = "0"
+            displayAnswer(display)
+            
+        }
+        else {
+            ac = clear(sender)
+            Num = 0
+            answer = 0
+            print(operatorStack, numberStack)
+            display = "0"
+            displayAnswer(display)
+
+            sender.setTitle("A/C", for: .normal) //Sets the title to A/C
+
+        }
+    }
+    
+    //This function will return the boolean type of whether the button is clear or all clear
+    func clear(_ sender: UIButton) -> Bool {
+        if erase == true {
+            erase = false
+            sender.setTitle("A/C", for: .normal)
+        }
+        else{
+            erase = true
+            sender.setTitle("C", for: .normal)
+        }
+        return erase
     }
     
     @IBAction func displayOutput(_ sender: UIButton){
+        //reset a and count to take in a new number
+        a = 1
+        count = 10
         numberStack.push(Num)
         Num = 0
         var ans: Double = 0
